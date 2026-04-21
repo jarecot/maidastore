@@ -6,101 +6,131 @@
   <title>Admin · Yanbal Store</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    /* El CSS es muy similar, mantengo la estructura intacta y agrego detalles puntuales */
     :root {
       --rose: #c9736a; --rose-light: #e8a89e; --rose-pale: #fdf0ee;
       --gold: #c9a96e; --gold-light: #eeddb8;
       --cream: #faf7f4; --charcoal: #2a2220; --muted: #8a7a76;
       --white: #ffffff; --shadow: 0 4px 24px rgba(42,34,32,0.1);
-      --radius: 14px;
-      --sidebar-w: 240px;
+      --radius: 14px; --sidebar-w: 240px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); display: flex; min-height: 100vh; }
 
-    /* Login, Sidebar, Main, Stats styles se mantienen igual a tu original */
     .sidebar { width: var(--sidebar-w); background: var(--charcoal); color: white; min-height: 100vh; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 50; }
     .sb-brand { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
     .sb-nav { flex: 1; padding: 20px 12px; }
-    .sb-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: rgba(255,255,255,0.65); font-size: 0.9rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+    .sb-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; color: rgba(255,255,255,0.65); font-size: 0.95rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition:0.2s;}
+    .sb-item:hover { background: rgba(255,255,255,0.1); color:white; }
     .sb-item.active { background: var(--rose); color: white; font-weight: 500; }
-    .main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
-    .topbar { background: white; padding: 18px 32px; display: flex; justify-content: space-between; border-bottom: 1px solid #efe8e5; position: sticky; top:0; z-index:40; }
-    .content { padding: 32px; }
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
-    .stat-card { background: white; border-radius: var(--radius); padding: 22px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow); }
-    .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px;}
-    .card-header { padding: 20px 24px; border-bottom: 1px solid #f0e8e5; display: flex; align-items: center; justify-content: space-between; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: var(--cream); padding: 12px 16px; text-align: left; font-size: 0.75rem; color: var(--muted); text-transform: uppercase;}
-    td { padding: 14px 16px; border-bottom: 1px solid #f5eeeb; font-size: 0.875rem; vertical-align: middle; }
     
-    .btn-primary { background: var(--rose); color: white; border: none; border-radius: 50px; padding: 11px 22px; cursor: pointer; }
-    .btn-secondary { background: none; border: 1.5px solid #e0d4d0; border-radius: 50px; padding: 8px 16px; cursor: pointer; }
-    .btn-danger { background: none; color: #e53935; border: 1.5px solid #e53935; border-radius: 50px; padding: 6px 14px; cursor: pointer; }
+    .main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+    .topbar { background: white; padding: 18px 32px; display: flex; justify-content: space-between; align-items:center; border-bottom: 1px solid #efe8e5; position: sticky; top:0; z-index:40; }
+    .topbar h2 { font-family: 'Cormorant Garamond', serif; font-size:1.8rem; }
+    .content { padding: 32px; }
+    
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .stat-card { background: white; border-radius: var(--radius); padding: 24px; display: flex; align-items: center; gap: 20px; box-shadow: var(--shadow); }
+    .stat-icon { font-size: 2.2rem; background: var(--rose-pale); width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    
+    .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px;}
+    .card-header { padding: 20px 24px; border-bottom: 1px solid #f0e8e5; display: flex; align-items: center; justify-content: space-between; font-weight:bold; font-size:1.1rem;}
+    table { width: 100%; border-collapse: collapse; }
+    th { background: var(--cream); padding: 14px 16px; text-align: left; font-size: 0.75rem; color: var(--muted); text-transform: uppercase;}
+    td { padding: 16px; border-bottom: 1px solid #f5eeeb; font-size: 0.9rem; vertical-align: middle; }
+    
+    .btn-primary { background: var(--rose); color: white; border: none; border-radius: 50px; padding: 12px 24px; cursor: pointer; font-weight:bold; transition:0.2s;}
+    .btn-primary:hover { background: #b5635a; }
+    .btn-secondary { background: white; border: 1.5px solid #e0d4d0; border-radius: 50px; padding: 8px 16px; cursor: pointer; font-weight:500; transition:0.2s;}
+    .btn-secondary:hover { background: var(--rose-pale); border-color:var(--rose); color:var(--rose); }
+    .btn-danger { background: white; color: #e53935; border: 1.5px solid #e53935; border-radius: 50px; padding: 8px 16px; cursor: pointer; font-weight:500; transition:0.2s; }
     .btn-danger:hover { background: #e53935; color: white; }
     
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+    
+    /* Modals */
+    .overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
     .overlay.open { opacity: 1; pointer-events: all; }
     .form-modal { background: white; border-radius: 20px; padding: 36px; width: 600px; max-width: 100%; max-height: 90vh; overflow-y: auto; }
-    .fg { margin-bottom: 16px; }
-    .fg label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 6px; }
-    .fg input, .fg select, .fg textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #e0d4d0; border-radius: 10px; font-family: inherit; }
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--charcoal); color: white; border-radius: 50px; padding: 12px 24px; opacity:0; transition: 0.3s; pointer-events:none;}
+    .form-modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 20px; }
+    
+    .fg { margin-bottom: 18px; }
+    .fg label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--charcoal); }
+    .fg input, .fg select, .fg textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0d4d0; border-radius: 10px; font-family: inherit; font-size:1rem; }
+    .fg input:focus, .fg textarea:focus { border-color: var(--rose); outline:none; }
+    
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--charcoal); color: white; border-radius: 50px; padding: 14px 28px; opacity:0; transition: 0.3s; pointer-events:none; font-weight:500; z-index: 9999;}
     .toast.show { opacity:1; }
     
     /* Toggle Switch */
     .toggle { width: 44px; height: 24px; background: #ddd; border-radius: 50px; position: relative; cursor: pointer; transition: 0.2s; }
     .toggle.on { background: var(--rose); }
-    .toggle::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: 0.2s; }
+    .toggle::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
     .toggle.on::after { left: 23px; }
 
     /* Login */
     #loginScreen { position: fixed; inset: 0; z-index: 999; background: linear-gradient(135deg, #1a0f0d, #3d2820); display: flex; align-items: center; justify-content: center; }
-    .login-box { background: white; border-radius: 20px; padding: 48px; width: 380px; text-align: center; }
+    .login-box { background: white; border-radius: 20px; padding: 48px; width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);}
+    .login-box h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; }
     
-    .badge { padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight:bold; }
+    /* Order Detail Content */
+    .order-detail-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; font-size: 0.95rem; }
+    .order-detail-row { display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:8px;}
+    .order-detail-items { background:#faf7f4; border-radius:12px; padding:15px; margin-bottom:20px; }
+    .order-item-line { display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px dashed #ddd; padding-bottom:10px;}
+    .order-item-line:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   </style>
 </head>
 <body>
 
 <div id="loginScreen">
   <div class="login-box">
-    <h1>Yanbal Admin</h1>
-    <input type="email" id="lEmail" placeholder="Correo" style="width:100%;padding:12px;margin-bottom:10px;" />
-    <input type="password" id="lPass" placeholder="Contraseña" style="width:100%;padding:12px;margin-bottom:20px;" onkeydown="if(event.key==='Enter')doLogin()" />
-    <button class="btn-primary" style="width:100%;" onclick="doLogin()">Ingresar</button>
+    <h1>👑 Admin Yanbal</h1>
+    <input type="email" id="lEmail" placeholder="Correo electrónico" style="width:100%;padding:14px;margin-bottom:15px;border-radius:10px;border:1px solid #ddd;" />
+    <input type="password" id="lPass" placeholder="Contraseña" style="width:100%;padding:14px;margin-bottom:25px;border-radius:10px;border:1px solid #ddd;" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="btn-primary" style="width:100%;" onclick="doLogin()">Entrar al Panel</button>
   </div>
 </div>
 
 <aside class="sidebar" id="sidebar">
-  <div class="sb-brand"><h2>Yanbal Admin</h2></div>
+  <div class="sb-brand"><h2>👑 Yanbal Admin</h2></div>
   <nav class="sb-nav">
-    <button class="sb-item active" onclick="setView('dashboard')">📊 Dashboard</button>
-    <button class="sb-item" onclick="setView('products')">💄 Productos</button>
-    <button class="sb-item" onclick="setView('orders')">📦 Pedidos</button>
-    <button class="sb-item" onclick="setView('settings')">⚙️ Configuración</button>
+    <button class="sb-item active" onclick="setView('dashboard')">📊 Dashboard General</button>
+    <button class="sb-item" onclick="setView('products')">💄 Mis Productos</button>
+    <button class="sb-item" onclick="setView('orders')">📦 Gestión de Pedidos</button>
+    <button class="sb-item" onclick="setView('settings')">⚙️ Configuración Tienda</button>
   </nav>
 </aside>
 
 <div class="main" id="mainArea" style="display:none">
-  <div class="topbar"><h2 id="topbarTitle">Dashboard</h2><div id="topbarActions"></div></div>
+  <div class="topbar"><h2 id="topbarTitle">📊 Dashboard General</h2><div id="topbarActions"></div></div>
 
   <div class="content">
     
     <div class="tab-panel active" id="view-dashboard">
       <div class="stats-row">
-        <div class="stat-card"><div><h2><span id="statProducts">0</span></h2><p>Productos</p></div></div>
-        <div class="stat-card"><div><h2><span id="statOrders">0</span></h2><p>Pedidos totales</p></div></div>
-        <div class="stat-card"><div><h2><span id="statPending">0</span></h2><p>Pendientes</p></div></div>
-        <div class="stat-card"><div><h2 style="color:var(--rose);"><span id="statRevenue">$0</span></h2><p>Ingresos (Entregados/Confirmados)</p></div></div>
+        <div class="stat-card">
+          <div class="stat-icon">💄</div>
+          <div><h2><span id="statProducts">0</span></h2><p style="color:var(--muted);font-size:0.9rem;">Productos Activos</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e3f2fd;">📦</div>
+          <div><h2><span id="statOrders">0</span></h2><p style="color:var(--muted);font-size:0.9rem;">Pedidos Totales</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fff3e0;">⏳</div>
+          <div><h2><span id="statPending">0</span></h2><p style="color:var(--muted);font-size:0.9rem;">Pendientes</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f5e9;">💰</div>
+          <div><h2 style="color:#2e7d32;"><span id="statRevenue">$0</span></h2><p style="color:var(--muted);font-size:0.9rem;">Ventas (Confirmadas)</p></div>
+        </div>
       </div>
+      
       <div class="card">
-        <div class="card-header">Últimos Pedidos</div>
+        <div class="card-header">🛎️ Últimos 5 Pedidos</div>
         <table>
-          <thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+          <thead><tr><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
           <tbody id="dashOrdersTbody"></tbody>
         </table>
       </div>
@@ -109,11 +139,11 @@
     <div class="tab-panel" id="view-products">
       <div class="card">
         <div class="card-header">
-          <span>Tus Productos</span>
-          <input type="text" id="prodSearch" placeholder="Buscar…" oninput="filterProducts()" style="padding:8px;border-radius:20px;border:1px solid #ccc;" />
+          <span>💄 Inventario de Productos</span>
+          <input type="text" id="prodSearch" placeholder="🔍 Buscar por nombre…" oninput="filterProducts()" style="padding:10px 15px;border-radius:20px;border:1px solid #ccc;width:250px;" />
         </div>
         <table>
-          <thead><tr><th>Foto</th><th>Producto</th><th>Precio</th><th>Stock</th><th>Destacado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Foto</th><th>Producto</th><th>Precio Final</th><th>Stock</th><th>⭐ Destacado</th><th>Acciones</th></tr></thead>
           <tbody id="productsTbody"></tbody>
         </table>
       </div>
@@ -121,9 +151,9 @@
 
     <div class="tab-panel" id="view-orders">
       <div class="card">
-        <div class="card-header">Todos los pedidos</div>
+        <div class="card-header">📦 Historial de Pedidos</div>
         <table>
-          <thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="ordersTbody"></tbody>
         </table>
       </div>
@@ -131,27 +161,29 @@
 
     <div class="tab-panel" id="view-settings">
       <div class="card" style="max-width:600px; padding:32px">
-        <h3>Datos Públicos de la Tienda</h3><br>
-        <div class="fg"><label>Tu Nombre (Aparece en el menú y pie de página)</label><input type="text" id="cfgName" /></div>
-        <div class="fg"><label>Mensaje de Bienvenida</label><textarea id="cfgWelcome"></textarea></div>
-        <div class="fg"><label>WhatsApp para pedidos (Ej: 573001234567)</label><input type="text" id="cfgWA" /></div>
+        <h3 style="color:var(--rose);">👩🏻‍💻 Datos Públicos de la Tienda</h3>
+        <p style="font-size:0.9rem; color:var(--muted); margin-bottom:20px;">Esta información será visible para tus clientes.</p>
+        <div class="fg"><label>Tu Nombre / Marca Personal</label><input type="text" id="cfgName" placeholder="Ej: Maida Yanbal" /></div>
+        <div class="fg"><label>Mensaje de Bienvenida</label><textarea id="cfgWelcome" rows="3"></textarea></div>
+        <div class="fg"><label>WhatsApp para recibir pedidos (Ej: 573001234567 sin el '+')</label><input type="text" id="cfgWA" /></div>
         
-        <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+        <hr style="margin:30px 0; border:none; border-top:1px solid #eee;">
         
-        <h3>Catálogo Digital Yanbal</h3>
-        <p style="font-size:0.85rem;color:gray;margin-bottom:15px;">Al llenar esto, se mostrará un botón en la tienda para que tus clientes vean el catálogo actual.</p>
+        <h3 style="color:var(--rose);">📖 Catálogo Digital Yanbal</h3>
+        <p style="font-size:0.85rem;color:gray;margin-bottom:15px;">Completa esto para que aparezca un botón hacia el catálogo oficial de la campaña.</p>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
           <div class="fg"><label>Año (Ej: 2026)</label><input type="text" id="cfgCatYear" /></div>
           <div class="fg"><label>Campaña (Ej: 5)</label><input type="text" id="cfgCatCamp" /></div>
         </div>
         <div class="fg"><label>ID Consultora Yanbal (Ej: 194227658)</label><input type="text" id="cfgCatId" /></div>
 
-        <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+        <hr style="margin:30px 0; border:none; border-top:1px solid #eee;">
 
-        <h3>Imágenes (ImgBB)</h3>
-        <div class="fg"><label>API Key ImgBB (Gratis)</label><input type="text" id="cfgImgbb" /></div>
+        <h3 style="color:var(--rose);">🖼️ Imágenes (ImgBB)</h3>
+        <p style="font-size:0.85rem;color:gray;margin-bottom:15px;">Necesario para poder subir fotos. Obtén tu llave gratis en <a href="https://api.imgbb.com/" target="_blank">api.imgbb.com</a></p>
+        <div class="fg"><label>API Key ImgBB</label><input type="text" id="cfgImgbb" /></div>
 
-        <button class="btn-primary" onclick="saveSettings()">💾 Guardar todo</button>
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="saveSettings()">💾 Guardar Configuración</button>
       </div>
     </div>
 
@@ -160,30 +192,48 @@
 
 <div class="overlay" id="productFormOverlay">
   <div class="form-modal">
-    <h2 id="formTitle">Nuevo producto</h2>
+    <h2 id="formTitle">Nuevo Producto</h2>
     
-    <div style="display:flex;gap:15px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:10px;"><div class="toggle on" id="fActive" onclick="this.classList.toggle('on')"></div>Activo</div>
-      <div style="display:flex;align-items:center;gap:10px;"><div class="toggle" id="fFeatured" onclick="this.classList.toggle('on')"></div>⭐ Destacado</div>
+    <div style="display:flex;gap:30px;margin-bottom:20px; background:var(--cream); padding:15px; border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;"><div class="toggle on" id="fActive" onclick="this.classList.toggle('on')"></div><strong>Visible en tienda</strong></div>
+      <div style="display:flex;align-items:center;gap:10px;"><div class="toggle" id="fFeatured" onclick="this.classList.toggle('on')"></div><strong>⭐ Destacado</strong></div>
     </div>
 
-    <div class="fg"><label>Nombre</label><input type="text" id="fName" /></div>
+    <div class="fg"><label>Nombre del Producto *</label><input type="text" id="fName" /></div>
+    
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-      <div class="fg"><label>Precio</label><input type="number" id="fPrice" /></div>
-      <div class="fg"><label>Stock</label><input type="number" id="fStock" /></div>
+      <div class="fg"><label>Precio de Venta ($) *</label><input type="number" id="fPrice" placeholder="Precio final al cliente" /></div>
+      <div class="fg">
+        <label>Precio Original/Normal ($)</label>
+        <input type="number" id="fOriginalPrice" placeholder="Opcional. Se mostrará tachado." />
+        <small style="color:gray;">Si es mayor al precio de venta, calculará el % de descuento.</small>
+      </div>
     </div>
-    <div class="fg"><label>Descripción</label><textarea id="fDesc"></textarea></div>
+
+    <div class="fg"><label>Unidades en Stock *</label><input type="number" id="fStock" placeholder="Ej: 10" /></div>
+    
+    <div class="fg"><label>Descripción del producto</label><textarea id="fDesc" rows="4"></textarea></div>
     
     <div class="fg">
-      <label>Subir Imágenes (Puedes subir varias)</label>
+      <label>Subir Imágenes (La primera será la principal)</label>
       <input type="file" id="fImgFile" accept="image/*" onchange="handleImageUpload(event)" style="margin-bottom:10px;" />
-      <div id="imgList" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+      <div id="imgList" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; background:#f9f9f9; padding:10px; border-radius:8px; min-height:80px;"></div>
     </div>
     
-    <div style="display:flex; gap:10px; margin-top:20px;">
-      <button class="btn-secondary" onclick="closeProductForm()">Cancelar</button>
-      <button class="btn-primary" onclick="saveProduct()">Guardar Producto</button>
+    <div style="display:flex; gap:15px; margin-top:30px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeProductForm()">Cancelar</button>
+      <button class="btn-primary" style="flex:2;" onclick="saveProduct()">💾 Guardar Producto</button>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="orderDetailOverlay">
+  <div class="form-modal" style="width: 500px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="margin:0;">📦 Detalle del Pedido</h2>
+      <button onclick="closeOrderDetail()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
+    </div>
+    <div id="orderDetailContent"></div>
   </div>
 </div>
 
@@ -214,7 +264,7 @@
 
   window.doLogin = async () => {
     try { await signInWithEmailAndPassword(auth, document.getElementById('lEmail').value, document.getElementById('lPass').value); } 
-    catch(e) { alert("Credenciales incorrectas"); }
+    catch(e) { alert("🚨 Credenciales incorrectas. Intenta nuevamente."); }
   };
 
   let allProducts = [], allOrders = [];
@@ -255,14 +305,14 @@
       catId: document.getElementById('cfgCatId').value,
       imgbbKey: document.getElementById('cfgImgbb').value
     });
-    showToast('Configuración guardada. Recarga la tienda para ver los cambios.');
+    showToast('✅ Configuración guardada exitosamente.');
   };
 
   function updateStats() {
     document.getElementById('statProducts').textContent = allProducts.filter(p=>p.active).length;
     document.getElementById('statOrders').textContent = allOrders.length;
     document.getElementById('statPending').textContent = allOrders.filter(o=>o.status==='pendiente').length;
-    // Solo ingresos reales
+    // Solo ingresos confirmados/enviados/entregados
     const rev = allOrders.filter(o => ['confirmado','enviado','entregado'].includes(o.status)).reduce((s, o) => s + (o.total||0), 0);
     document.getElementById('statRevenue').textContent = fmtPrice(rev);
   }
@@ -270,19 +320,30 @@
   window.renderProductsTable = () => {
     const term = (document.getElementById('prodSearch')?.value || '').toLowerCase();
     const tbody = document.getElementById('productsTbody');
-    tbody.innerHTML = allProducts.filter(p => p.name.toLowerCase().includes(term)).map(p => `
+    tbody.innerHTML = allProducts.filter(p => p.name.toLowerCase().includes(term)).map(p => {
+      const hasOffer = p.originalPrice && p.originalPrice > p.price;
+      return `
       <tr>
-        <td><img src="${(p.imageUrls && p.imageUrls[0]) || p.imageUrl || ''}" style="width:40px;height:40px;object-fit:cover;border-radius:5px;"></td>
-        <td>${p.name}</td>
-        <td>${fmtPrice(p.price)}</td>
-        <td>${p.stock}</td>
-        <td>${p.featured ? '⭐ Sí' : 'No'}</td>
+        <td><img src="${(p.imageUrls && p.imageUrls[0]) || p.imageUrl || 'https://via.placeholder.com/40'}" style="width:45px;height:45px;object-fit:cover;border-radius:8px;"></td>
+        <td><strong>${p.name}</strong></td>
         <td>
-          <button class="btn-secondary" onclick="editProduct('${p.id}')">✏️</button>
-          <button class="btn-danger" onclick="deleteProduct('${p.id}')">🗑</button>
+          <span style="color:var(--rose);font-weight:bold;">${fmtPrice(p.price)}</span>
+          ${hasOffer ? `<br><small style="text-decoration:line-through;color:gray;">${fmtPrice(p.originalPrice)}</small>` : ''}
+        </td>
+        <td>
+          <span style="padding:4px 8px; border-radius:20px; font-weight:bold; font-size:0.8rem; background:${p.stock <= 5 ? (p.stock===0?'#ffebee':'#fff3e0') : '#e8f5e9'}; color:${p.stock <= 5 ? (p.stock===0?'#c62828':'#e65100') : '#2e7d32'};">
+            ${p.stock} un.
+          </span>
+        </td>
+        <td>${p.featured ? '⭐' : ''}</td>
+        <td>
+          <div style="display:flex;gap:5px;">
+            <button class="btn-secondary" onclick="editProduct('${p.id}')">✏️ Editar</button>
+            <button class="btn-danger" onclick="deleteProduct('${p.id}')">🗑️</button>
+          </div>
         </td>
       </tr>
-    `).join('');
+    `}).join('');
   };
 
   window.filterProducts = renderProductsTable;
@@ -290,36 +351,105 @@
   window.renderOrdersTable = () => {
     document.getElementById('ordersTbody').innerHTML = allOrders.map(o => `
       <tr>
-        <td>${o.orderId || o.id.slice(0,8)}</td>
+        <td><strong>${o.orderId || o.id.slice(0,8)}</strong></td>
         <td>${o.customerName}</td>
-        <td>${fmtPrice(o.total)}</td>
+        <td style="font-weight:bold;">${fmtPrice(o.total)}</td>
         <td>
-          <select style="padding:5px;border-radius:5px;" onchange="updateOrderStatus('${o.id}', this.value)">
+          <select style="padding:6px; border-radius:8px; border:1px solid #ccc; font-family:inherit;" onchange="updateOrderStatus('${o.id}', this.value)">
             ${['pendiente','confirmado','enviado','entregado','cancelado'].map(s => 
-              `<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`
+              `<option value="${s}" ${o.status===s?'selected':''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
             ).join('')}
           </select>
         </td>
-        <td><button class="btn-danger" onclick="deleteOrder('${o.id}')">🗑 Eliminar</button></td>
+        <td>
+          <div style="display:flex;gap:5px;">
+            <button class="btn-secondary" onclick="showOrderDetail('${o.id}')">👁️ Ver</button>
+            <button class="btn-danger" onclick="deleteOrder('${o.id}')">🗑️</button>
+          </div>
+        </td>
       </tr>
     `).join('');
   };
 
   window.renderDashOrders = () => {
     document.getElementById('dashOrdersTbody').innerHTML = allOrders.slice(0,5).map(o => `
-      <tr><td>${o.orderId||o.id.slice(0,8)}</td><td>${o.customerName}</td><td>${fmtPrice(o.total)}</td><td>${o.status}</td></tr>
+      <tr>
+        <td><strong>${o.orderId||o.id.slice(0,8)}</strong></td>
+        <td>${o.customerName}</td>
+        <td style="font-weight:bold;">${fmtPrice(o.total)}</td>
+        <td>
+          <span style="padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:bold; background:${o.status==='pendiente'?'#fff3e0':'#e8f5e9'}; color:${o.status==='pendiente'?'#e65100':'#2e7d32'};">
+            ${o.status.toUpperCase()}
+          </span>
+        </td>
+      </tr>
     `).join('');
+  };
+
+  // VER DETALLE DEL PEDIDO
+  window.showOrderDetail = (id) => {
+    const o = allOrders.find(x => x.id === id);
+    if (!o) return;
+    
+    const itemsHtml = (o.items || []).map(i => `
+      <div class="order-item-line">
+        <span style="font-weight:600;">${i.qty}x ${i.name}</span>
+        <span style="color:var(--rose); font-weight:bold;">${fmtPrice(i.price * i.qty)}</span>
+      </div>
+    `).join('');
+
+    document.getElementById('orderDetailContent').innerHTML = `
+      <div class="order-detail-grid">
+        <div class="order-detail-row"><span style="color:gray;">ID Pedido:</span> <strong>${o.orderId || o.id}</strong></div>
+        <div class="order-detail-row"><span style="color:gray;">Cliente:</span> <span>${o.customerName}</span></div>
+        <div class="order-detail-row"><span style="color:gray;">Celular:</span> <span><a href="https://wa.me/57${o.customerPhone.replace(/\D/g,'')}" target="_blank" style="color:#25D366; text-decoration:none; font-weight:bold;">📞 ${o.customerPhone}</a></span></div>
+        <div class="order-detail-row"><span style="color:gray;">Dirección:</span> <span>${o.address}</span></div>
+        ${o.note ? `<div class="order-detail-row"><span style="color:gray;">Nota:</span> <span style="font-style:italic;">"${o.note}"</span></div>` : ''}
+      </div>
+      
+      <h3 style="margin-bottom:10px; font-size:1rem; color:var(--charcoal);">Resumen de Compra:</h3>
+      <div class="order-detail-items">
+        ${itemsHtml}
+      </div>
+      
+      <div style="display:flex; justify-content:space-between; font-size:1.4rem; font-weight:bold;">
+        <span>TOTAL:</span>
+        <span style="color:var(--rose);">${fmtPrice(o.total)}</span>
+      </div>
+    `;
+    
+    document.getElementById('orderDetailOverlay').classList.add('open');
+  };
+
+  window.closeOrderDetail = () => {
+    document.getElementById('orderDetailOverlay').classList.remove('open');
   };
 
   window.updateOrderStatus = async (id, status) => {
     const o = allOrders.find(x => x.id === id);
+    const prevStatus = o.status;
     await updateDoc(doc(db, 'orders', id), { status });
-    showToast('Estado actualizado');
+    showToast('✅ Estado actualizado correctamente');
     
-    // Notificar al cliente si se envió o confirmó
+    // REDUCCIÓN AUTOMÁTICA DE STOCK
+    const activeStatuses = ['confirmado', 'enviado', 'entregado'];
+    if (!activeStatuses.includes(prevStatus) && activeStatuses.includes(status)) {
+       for (const item of o.items) {
+          const pRef = doc(db, 'products', item.id);
+          const pSnap = await getDoc(pRef);
+          if(pSnap.exists()){
+             const currentStock = pSnap.data().stock || 0;
+             const newStock = Math.max(0, currentStock - item.qty);
+             await updateDoc(pRef, { stock: newStock });
+          }
+       }
+       showToast(`📦 Stock descontado automáticamente`);
+    }
+
+    // AVISO A WHATSAPP
     if(status === 'confirmado' || status === 'enviado' || status === 'entregado') {
-      if(confirm('¿Deseas enviar un WhatsApp al cliente avisando que su pedido está: ' + status.toUpperCase() + '?')) {
-        const msg = encodeURIComponent(`Hola ${o.customerName}, te escribo de tu Tienda Yanbal para informarte que tu pedido (${o.orderId}) ahora se encuentra en estado: *${status.toUpperCase()}* 🌸`);
+      if(confirm('¿Deseas enviar un mensaje automático por WhatsApp al cliente avisando que su pedido está: ' + status.toUpperCase() + '?')) {
+        const msg = encodeURIComponent(`🌸 *¡Hola ${o.customerName}!* 🌸\n\nTe escribo de tu Tienda Yanbal para informarte que tu pedido con código *${o.orderId || id.slice(0,8)}* ahora se encuentra en estado: 🚀 *${status.toUpperCase()}*\n\n¡Gracias por tu confianza! ✨`);
         const phone = o.customerPhone.replace(/\D/g,'');
         window.open(`https://wa.me/57${phone}?text=${msg}`, '_blank');
       }
@@ -327,22 +457,26 @@
   };
 
   window.deleteOrder = async (id) => {
-    if(confirm("🚨 ¿ESTÁS SEGURA de que quieres eliminar este pedido? Esta acción no se puede deshacer.")) {
+    if(confirm("🚨 ¿ESTÁS SEGURA de que quieres eliminar este pedido? Esta acción borrará el registro de forma permanente.")) {
       await deleteDoc(doc(db, 'orders', id));
-      showToast('🗑 Pedido eliminado');
+      showToast('🗑️ Pedido eliminado');
     }
   }
 
-  // --- LOGICA DE PRODUCTOS (MULTIPLES IMAGENES) ---
+  // --- LÓGICA DE PRODUCTOS ---
   let editingId = null;
   let currentImages = [];
 
   function renderImgList() {
     const container = document.getElementById('imgList');
+    if(currentImages.length === 0) {
+      container.innerHTML = '<span style="color:gray; font-size:0.85rem; padding:10px;">Aún no hay fotos subidas.</span>';
+      return;
+    }
     container.innerHTML = currentImages.map((url, i) => `
       <div style="position:relative; width:80px; height:80px;">
-        <img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
-        <button type="button" onclick="removeImg(${i})" style="position:absolute;top:-5px;right:-5px;background:red;color:white;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;">✕</button>
+        <img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px; border:1px solid #ddd;">
+        <button type="button" onclick="removeImg(${i})" style="position:absolute;top:-5px;right:-5px;background:#e53935;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-weight:bold;">✕</button>
       </div>
     `).join('');
   }
@@ -350,8 +484,8 @@
 
   window.openNewProduct = () => {
     editingId = null; currentImages = []; renderImgList();
-    document.getElementById('formTitle').textContent = 'Nuevo producto';
-    ['fName','fPrice','fStock','fDesc'].forEach(i => document.getElementById(i).value='');
+    document.getElementById('formTitle').textContent = '➕ Nuevo Producto';
+    ['fName','fPrice','fOriginalPrice','fStock','fDesc'].forEach(i => document.getElementById(i).value='');
     document.getElementById('fActive').classList.add('on');
     document.getElementById('fFeatured').classList.remove('on');
     document.getElementById('productFormOverlay').classList.add('open');
@@ -363,9 +497,11 @@
     currentImages = p.imageUrls || (p.imageUrl ? [p.imageUrl] : []);
     renderImgList();
     
+    document.getElementById('formTitle').textContent = '✏️ Editar Producto';
     document.getElementById('fName').value = p.name;
     document.getElementById('fPrice').value = p.price;
-    document.getElementById('fStock').value = p.stock;
+    document.getElementById('fOriginalPrice').value = p.originalPrice || '';
+    document.getElementById('fStock').value = p.stock || 0;
     document.getElementById('fDesc').value = p.description || '';
     document.getElementById('fActive').classList.toggle('on', !!p.active);
     document.getElementById('fFeatured').classList.toggle('on', !!p.featured);
@@ -373,24 +509,43 @@
   };
 
   window.saveProduct = async () => {
+    const name = document.getElementById('fName').value.trim();
+    const price = parseFloat(document.getElementById('fPrice').value);
+    const stock = parseInt(document.getElementById('fStock').value);
+    
+    if(!name || isNaN(price) || isNaN(stock)) {
+      alert("Por favor completa Nombre, Precio y Stock.");
+      return;
+    }
+
     const data = {
-      name: document.getElementById('fName').value,
-      price: parseFloat(document.getElementById('fPrice').value),
-      stock: parseInt(document.getElementById('fStock').value),
+      name,
+      price,
+      originalPrice: parseFloat(document.getElementById('fOriginalPrice').value) || null,
+      stock,
       description: document.getElementById('fDesc').value,
       active: document.getElementById('fActive').classList.contains('on'),
       featured: document.getElementById('fFeatured').classList.contains('on'),
       imageUrls: currentImages,
-      imageUrl: currentImages[0] || '' // Fallback por seguridad
+      imageUrl: currentImages[0] || ''
     };
-    if (editingId) await updateDoc(doc(db, 'products', editingId), data);
-    else await addDoc(collection(db, 'products'), { ...data, createdAt: serverTimestamp() });
+
+    if (editingId) {
+      await updateDoc(doc(db, 'products', editingId), data);
+      showToast('✅ Producto actualizado');
+    } else {
+      await addDoc(collection(db, 'products'), { ...data, createdAt: serverTimestamp() });
+      showToast('✅ Producto creado');
+    }
+    
     document.getElementById('productFormOverlay').classList.remove('open');
-    showToast('Guardado');
   };
 
   window.deleteProduct = async (id) => {
-    if(confirm('¿Eliminar producto?')) await deleteDoc(doc(db, 'products', id));
+    if(confirm('🚨 ¿Segura que quieres eliminar este producto?')) {
+      await deleteDoc(doc(db, 'products', id));
+      showToast('🗑️ Producto eliminado');
+    }
   };
 
   window.closeProductForm = () => document.getElementById('productFormOverlay').classList.remove('open');
@@ -398,9 +553,9 @@
   window.handleImageUpload = async (e) => {
     const file = e.target.files[0]; if(!file) return;
     const apiKey = document.getElementById('cfgImgbb').value;
-    if(!apiKey) { alert("Configura tu API Key de ImgBB en la pestaña de Configuración primero."); return; }
+    if(!apiKey) { alert("🚨 Configura tu API Key de ImgBB en la pestaña de Configuración primero."); return; }
     
-    showToast("Subiendo imagen...");
+    showToast("⏳ Subiendo imagen...");
     const fd = new FormData(); fd.append('image', file);
     try {
       const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, { method: 'POST', body: fd });
@@ -408,13 +563,14 @@
       if(json.success) {
         currentImages.push(json.data.url);
         renderImgList();
-        showToast("Imagen agregada ✓");
+        showToast("🖼️ Imagen agregada correctamente");
       }
-    } catch(err) { alert("Error subiendo"); }
+    } catch(err) { alert("Error subiendo imagen. Verifica tu conexión o la API Key."); }
+    e.target.value = ''; // Reset input file
   };
 
   function fmtPrice(n) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n||0); }
-  function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+  function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 </script>
 
 <script>
@@ -423,9 +579,16 @@
     document.getElementById('view-' + v).classList.add('active');
     document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
     event.target.closest('.sb-item').classList.add('active');
-    const titles = { dashboard: 'Dashboard', products: 'Productos', orders: 'Pedidos', settings: 'Configuración' };
+    
+    const titles = { 
+      dashboard: '📊 Dashboard General', 
+      products: '💄 Inventario de Productos', 
+      orders: '📦 Gestión de Pedidos', 
+      settings: '⚙️ Configuración de la Tienda' 
+    };
     document.getElementById('topbarTitle').textContent = titles[v] || v;
-    document.getElementById('topbarActions').innerHTML = v === 'products' ? `<button class="btn-primary" onclick="openNewProduct()">+ Nuevo producto</button>` : '';
+    
+    document.getElementById('topbarActions').innerHTML = v === 'products' ? `<button class="btn-primary" onclick="openNewProduct()">➕ Nuevo Producto</button>` : '';
   }
 </script>
 </body>
