@@ -598,7 +598,10 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { 
+  getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, 
+  onSnapshot, query, orderBy, serverTimestamp, getDoc, setDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   // Storage: using Cloudinary or ImgBB instead (Firebase Storage requires paid plan)
 
   // ⚙️ REEMPLAZA con tu config de Firebase
