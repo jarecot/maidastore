@@ -685,9 +685,9 @@
       cloudinaryCloud: document.getElementById('cfgCloudName').value.trim(),
       cloudinaryPreset: document.getElementById('cfgCloudPreset').value.trim(),
     };
-    await updateDoc(doc(db, 'settings', 'store'), data).catch(() =>
-      addDoc(collection(db, 'settings'), data)
-    );
+      import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+      await setDoc(doc(db, 'settings', 'store'), data);
     showToast('✅ Configuración guardada');
   };
 
