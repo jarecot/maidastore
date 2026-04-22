@@ -520,11 +520,11 @@
     document.getElementById('productFormOverlay').classList.add('open');
   };
 
-  window.saveProduct = async () => {
+window.saveProduct = async () => {
     const name = document.getElementById('fName').value.trim();
     const price = parseFloat(document.getElementById('fPrice').value);
     const stock = parseInt(document.getElementById('fStock').value);
-    const category = document.getElementById('pCategory').value;
+    const category = document.getElementById('pCategory').value; // <--- ESTO: Captura la opción elegida
     
     if(!name || isNaN(price) || isNaN(stock)) {
       alert("Por favor completa Nombre, Precio y Stock.");
@@ -534,7 +534,7 @@
     const data = {
       name,
       price,
-      category,
+      category, // <--- ESTO: Agregamos la categoría al paquete de datos
       originalPrice: parseFloat(document.getElementById('fOriginalPrice').value) || null,
       stock,
       description: document.getElementById('fDesc').value,
@@ -553,7 +553,7 @@
     }
     
     document.getElementById('productFormOverlay').classList.remove('open');
-  };
+};
 
   window.deleteProduct = async (id) => {
     if(confirm('🚨 ¿Segura que quieres eliminar este producto?')) {
