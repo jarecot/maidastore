@@ -209,7 +209,10 @@
     <option value="Maquillaje">Maquillaje</option>
     <option value="Cuidado del Rostro">Cuidado del Rostro</option>
     <option value="Cuidado del Cuerpo">Cuidado del Cuerpo</option>
-    <option value="Joyería">Joyería</option>
+    <option value="Joyería y Accesorios">Joyería y Accesorios</option>
+    <option value="Cabello">Cabello</option>
+    <option value="Nutrición y Bienestar">Nutrición y Bienestar</option>
+    <option value="Para Hombres">Para Hombres</option>
   </select>
 </div>
     
@@ -498,6 +501,7 @@
     editingId = null; currentImages = []; renderImgList();
     document.getElementById('formTitle').textContent = '➕ Nuevo Producto';
     ['fName','fPrice','fOriginalPrice','fStock','fDesc'].forEach(i => document.getElementById(i).value='');
+    document.getElementById('pCategory').value = 'Perfumes';
     document.getElementById('fActive').classList.add('on');
     document.getElementById('fFeatured').classList.remove('on');
     document.getElementById('productFormOverlay').classList.add('open');
@@ -512,7 +516,7 @@
     document.getElementById('formTitle').textContent = '✏️ Editar Producto';
     document.getElementById('fName').value = p.name;
     document.getElementById('fPrice').value = p.price;
-    document.getElementById('pCategory').value = p.category || 'Perfumes';
+    document.getElementById('pCategory').value = p.category || '';
     document.getElementById('fOriginalPrice').value = p.originalPrice || '';
     document.getElementById('fStock').value = p.stock || 0;
     document.getElementById('fDesc').value = p.description || '';
