@@ -260,7 +260,11 @@
 </section>
 
 <div class="filters-bar" id="filtersBar">
-  <button class="filter-btn active" data-cat="all">Todos</button>
+  <button class="filter-btn active" onclick="setActiveCategory('all')">Todos</button>
+  <button class="filter-btn" onclick="setActiveCategory('Perfumes')">Perfumes</button>
+  <button class="filter-btn" onclick="setActiveCategory('Maquillaje')">Maquillaje</button>
+  <button class="filter-btn" onclick="setActiveCategory('Cuidado del cuerpo')">Cuerpo</button>
+  <button class="filter-btn" onclick="setActiveCategory('Joyería')">Joyería</button>
 </div>
 
 <section class="products-section" id="productos">
@@ -431,7 +435,7 @@ function buildProductCard(p) {
   else if (lowStock) badges += `<span class="badge-stock low">¡Últimas ${stockQty}!</span>`;
 
   return `
-    <div class="product-card featured-card" onclick="openModal('${p.id}')">
+    <div class="product-card featured-card" data-category="${p.category || ''}" onclick="openModal('${p.id}')">
       <div class="product-img-wrap">
         <img src="${img}" alt="${p.name}"/>
         ${badges}
@@ -661,6 +665,26 @@ function fmtPrice(n) { return new Intl.NumberFormat('es-CO', { style: 'currency'
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
 updateCartUI();
+
+window.setActiveCategory = (cat) => {
+  // 1. Actualizamos la variable global que ya usa tu sistema
+  activeCategory = cat; 
+
+  // 2. Cambiamos el estilo visual de los botones
+  const buttons = document.querySelectorAll('.filter-btn');
+  buttons.forEach(btn => {
+    // Si el texto del botón o su evento coinciden, le ponemos la clase active
+    if(btn.getAttribute('onclick').includes(`'${cat}'`)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // 3. Llamamos a la función que ya tienes para refrescar la tienda
+  // Esto hará que renderStore use el nuevo valor de activeCategory
+  renderStore(allProducts); 
+};
 </script>
 </body>
 </html>
