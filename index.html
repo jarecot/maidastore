@@ -208,10 +208,15 @@
       .hero-content { margin: 0 auto; }
       .nav-search { display: none; }
       .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
-      .product-name { font-size: 1.2rem; }
-      .price-current { font-size: 1.2rem; }
-      .btn-add { padding: 10px; font-size: 0.9rem; }
+      .product-info { padding: 14px; }
+      .product-name { font-size: 1.05rem; line-height: 1.25; margin-bottom: 6px; }
+      .product-desc { font-size: 0.88rem; }
+      .price-current { font-size: 1.25rem; }
+      .price-original { font-size: 0.9rem; }
+      .stock-text { font-size: 0.82rem; }
+      .btn-add { padding: 11px; font-size: 0.95rem; font-weight: 600; }
       .filters-bar { padding: 16px 5%; justify-content: center; }
+      .sort-select { font-size: 0.9rem; }
     }
 
     /* Cart */
@@ -694,18 +699,20 @@ async function sendWhatsApp() {
     catch(e) { console.error(e); }
   }
 
-  // Mensaje de WhatsApp Hermoso
-  const lines = cart.map(i => `🔸 ${i.qty}x *${i.name}* = ${fmtPrice(i.price * i.qty)}`).join('\n');
-  const msg = `🌸 *¡HOLA! TENGO UN NUEVO PEDIDO* 🌸\n\n` +
-              `🆔 *No. Pedido:* ${orderId}\n` +
+  const lines = cart.map(i => `  • ${i.qty}x ${i.name} — ${fmtPrice(i.price * i.qty)}`).join('\n');
+  const msg = `✨ *Nuevo Pedido* ✨\n` +
+              `*#${orderId}*\n` +
+              `────────────────\n` +
               `👤 *Cliente:* ${name}\n` +
-              `📞 *Celular:* ${phone}\n` +
+              `📱 *Celular:* ${phone}\n` +
               `📍 *Dirección:* ${address}\n` +
-              `${note ? `📝 *Nota:* _${note}_\n` : ''}\n` +
-              `🛍️ *MI CARRITO:*\n` +
-              `${lines}\n\n` +
-              `💰 *TOTAL A PAGAR: ${fmtPrice(total)}*\n\n` +
-              `✨ _¡Quedo atenta(o) a la confirmación, gracias!_ ✨`;
+              `${note ? `📝 *Nota:* _${note}_\n` : ''}` +
+              `────────────────\n` +
+              `🛍 *Productos:*\n` +
+              `${lines}\n` +
+              `────────────────\n` +
+              `💳 *Total: ${fmtPrice(total)}*\n\n` +
+              `_Quedo atenta a la confirmación, gracias_ 🌸`;
   
   const waNum = window.WHATSAPP_NUMBER || '573000000000';
   window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
