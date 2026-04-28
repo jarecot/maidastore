@@ -155,7 +155,7 @@
     .product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.25s, box-shadow 0.25s; position: relative; cursor: pointer; display: flex; flex-direction: column; }
     .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
     .product-img-wrap { position: relative; padding-top: 100%; background: var(--rose-pale); overflow: hidden; }
-    .product-img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .product-img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 8px; transition: transform 0.4s; }
     
     /* Badges */
     .badge-offer { position: absolute; top: 12px; left: 12px; background: var(--rose); color: white; border-radius: 8px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -186,9 +186,9 @@
     
     .modal-left { background: var(--rose-pale); padding: 20px; display:flex; flex-direction: column; gap:12px; }
     .modal-gallery { width: 100%; padding-top: 100%; position: relative; border-radius: 12px; overflow: hidden; cursor: zoom-in; }
-    .modal-gallery img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease-out; transform-origin: center; }
+    .modal-gallery img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 12px; transition: transform 0.2s ease-out; transform-origin: center; }
     .modal-thumbs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
-    .modal-thumbs img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 2px solid transparent; opacity: 0.6; }
+    .modal-thumbs img { width: 60px; height: 60px; border-radius: 8px; object-fit: contain; padding: 4px; background: white; cursor: pointer; border: 2px solid transparent; opacity: 0.6; }
     .modal-thumbs img.active { border-color: var(--rose); opacity: 1; }
     
     .modal-content { padding: 32px; display: flex; flex-direction: column; }
