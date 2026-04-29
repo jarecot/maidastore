@@ -389,12 +389,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, query, where, onSnapshot, orderBy, getDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyD7YHFGKtxfBzRKUvPv7gh0QOyXJxT0ayc",
-    authDomain: "yanbal-store-masoco.firebaseapp.com",
-    projectId: "yanbal-store-masoco"
-  };
+  import { firebaseConfig } from './firebase-config.js';
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
