@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maida Store · Producto</title>
+  <meta id="metaDescription" name="description" content="Descubre este producto en Maida Store"/>
+
+  <!-- Open Graph: para que se vea bonito cuando se comparte el link en WhatsApp/Instagram -->
+  <meta id="ogTitle" property="og:title" content="Maida Store"/>
+  <meta id="ogDescription" property="og:description" content="Descubre este producto en Maida Store"/>
+  <meta id="ogImage" property="og:image" content=""/>
+  <meta property="og:type" content="product"/>
+
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --rose: #c9736a; --rose-light: #e8a89e; --rose-pale: #fdf0ee;
+      --gold: #c9a96e; --gold-light: #eeddb8;
+      --cream: #faf7f4; --charcoal: #2a2220; --muted: #8a7a76;
+      --white: #ffffff; --shadow: 0 4px 24px rgba(42,34,32,0.10);
+      --shadow-lg: 0 12px 48px rgba(42,34,32,0.16);
+      --radius: 16px; --radius-sm: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'DM Sans', sans-serif; background: var(--cream);
+      color: var(--charcoal); min-height: 100vh; font-size: 1.05rem;
+    }
+
+    /* ── NAV (simplificada) ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,247,244,0.96); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--gold-light); padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between; height: 92px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+    .nav-brand-text { font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 600; color: var(--charcoal); letter-spacing: 0.02em; }
+    .nav-brand-sub { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; display: block; line-height: 1.2; }
+    .back-link { color: var(--rose); text-decoration: none; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ── CONTENEDOR PRINCIPAL ── */
+    .product-page { max-width: 1000px; margin: 0 auto; padding: 40px 5% 80px; }
+    .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    @media (max-width: 768px) { .product-layout { grid-template-columns: 1fr; gap: 0; } }
+
+    /* Galería */
+    .gallery { background: var(--rose-pale); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+    .gallery-main { width: 100%; padding-top: 100%; position: relative; border-radius: 12px; overflow: hidden; background: white; }
+    .gallery-main img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 16px; mix-blend-mode: multiply; }
+    .gallery-thumbs { display: flex; gap: 10px; overflow-x: auto; }
+    .gallery-thumbs img { width: 64px; height: 64px; border-radius: 8px; object-fit: contain; padding: 6px; background: white; cursor: pointer; border: 2px solid transparent; opacity: 0.6; flex-shrink: 0; }
+    .gallery-thumbs img.active { border-color: var(--rose); opacity: 1; }
+
+    /* Info */
+    .product-detail { padding: 40px 40px 40px 0; display: flex; flex-direction: column; }
+    @media (max-width: 768px) { .product-detail { padding: 24px; } }
+    .detail-badge { display: inline-block; background: var(--rose-pale); color: var(--rose); font-size: 0.8rem; font-weight: 700; padding: 6px 14px; border-radius: 50px; margin-bottom: 16px; width: fit-content; }
+    .detail-name { font-family: 'Cormorant Garamond', serif; font-size: 2.3rem; font-weight: 600; line-height: 1.15; margin-bottom: 14px; }
+    .detail-prices { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+    .price-current { font-size: 2rem; font-weight: 700; color: var(--rose); font-family: 'Cormorant Garamond', serif; }
+    .price-original { font-size: 1.2rem; color: var(--muted); text-decoration: line-through; }
+    .discount-chip { background: var(--rose); color: white; padding: 3px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; }
+    .stock-text { font-size: 0.9rem; color: var(--muted); margin: 10px 0 22px; }
+    .detail-desc { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 28px; white-space: pre-line; }
+
+    .btn-whatsapp-buy {
+      background: #25D366; color: white; border: none; border-radius: 50px;
+      padding: 18px 28px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+      display: flex; justify-content: center; align-items: center; gap: 10px;
+      text-decoration: none; transition: 0.2s; width: 100%;
+    }
+    .btn-whatsapp-buy:hover { background: #1eb857; transform: translateY(-2px); }
+    .btn-whatsapp-buy:disabled, .btn-whatsapp-buy.disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+    .trust-note { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 14px; }
+
+    /* Loading / error states */
+    .state-box { max-width: 500px; margin: 100px auto; text-align: center; padding: 40px; }
+    .state-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 12px; }
+    .state-box p { color: var(--muted); margin-bottom: 20px; }
+    .state-box a { color: var(--rose); font-weight: 600; text-decoration: none; }
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--rose-pale); border-top-color: var(--rose); border-radius: 50%; margin: 0 auto 20px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { background: var(--charcoal); color: white; text-align: center; padding: 40px 5%; margin-top: 40px; }
+    footer p { opacity: 0.6; font-size: 0.9rem; }
+    footer strong { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">
+    <img src="LogoM.png" alt="Logo" style="width: 64px; height: auto; border-radius: 50%; object-fit: contain;">
+    <div>
+      <span class="nav-brand-text">Maida Store</span>
+      <span class="nav-brand-sub" id="navConsultantName">Tu consultora de confianza</span>
+    </div>
+  </a>
+  <a href="index.html" class="back-link">← Ver toda la tienda</a>
+</nav>
+
+<div id="loadingState" class="state-box">
+  <div class="spinner"></div>
+  <p>Cargando producto…</p>
+</div>
+
+<div id="errorState" class="state-box" style="display:none;">
+  <h2>😔 Producto no encontrado</h2>
+  <p>Puede que el producto ya no esté disponible o el link esté incompleto.</p>
+  <a href="index.html">Ver todos los productos →</a>
+</div>
+
+<main class="product-page" id="productPage" style="display:none;">
+  <div class="product-layout">
+    <div class="gallery">
+      <div class="gallery-main">
+        <img id="mainImg" src="" alt="" />
+      </div>
+      <div class="gallery-thumbs" id="thumbs"></div>
+    </div>
+
+    <div class="product-detail">
+      <span class="detail-badge" id="categoryBadge" style="display:none;"></span>
+      <h1 class="detail-name" id="productName"></h1>
+
+      <div class="detail-prices" id="pricesBox"></div>
+      <div class="stock-text" id="stockText"></div>
+
+      <p class="detail-desc" id="productDesc"></p>
+
+      <a href="#" id="whatsappBtn" class="btn-whatsapp-buy" target="_blank">
+        💬 Comprar por WhatsApp
+      </a>
+      <p class="trust-note">Te atenderemos directamente para confirmar tu pedido 🌸</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p><strong class="footer-name">MaidaStore</strong></p>
+  <p style="margin-top:10px;">Todos los productos son originales 🌸</p>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { firebaseConfig } from './firebase-config.js';
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  function fmtPrice(n) {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n || 0);
+  }
+
+  function showError() {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('errorState').style.display = 'block';
+  }
+
+  async function loadSettings() {
+    try {
+      const snap = await getDoc(doc(db, 'settings', 'store'));
+      if (snap.exists()) {
+        const s = snap.data();
+        if (s.consultantName) {
+          document.getElementById('navConsultantName').textContent = s.consultantName;
+          document.querySelector('.footer-name').textContent = s.consultantName;
+        }
+        if (s.whatsappNumber) window.WHATSAPP_NUMBER = s.whatsappNumber;
+      }
+    } catch (e) { /* settings son opcionales, seguimos sin ellas */ }
+  }
+
+  function changeMainImg(el, src) {
+    document.getElementById('mainImg').src = src;
+    document.querySelectorAll('.gallery-thumbs img').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+  window.changeMainImg = changeMainImg;
+
+  async function loadProduct() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (!id) { showError(); return; }
+
+    let snap;
+    try {
+      snap = await getDoc(doc(db, 'products', id));
+    } catch (e) { showError(); return; }
+
+    if (!snap.exists()) { showError(); return; }
+
+    const p = { id: snap.id, ...snap.data() };
+
+    if (p.active === false) { showError(); return; }
+
+    // Imágenes
+    const imgs = (p.imageUrls && p.imageUrls.length) ? p.imageUrls : (p.imageUrl ? [p.imageUrl] : []);
+    const mainImgUrl = imgs[0] || 'https://via.placeholder.com/600?text=Maida+Store';
+    document.getElementById('mainImg').src = mainImgUrl;
+    document.getElementById('mainImg').alt = p.name;
+
+    if (imgs.length > 1) {
+      document.getElementById('thumbs').innerHTML = imgs.map((img, i) =>
+        `<img src="${img}" class="${i === 0 ? 'active' : ''}" onclick="changeMainImg(this, '${img}')" />`
+      ).join('');
+    }
+
+    // Textos
+    document.getElementById('productName').textContent = p.name;
+    document.getElementById('productDesc').textContent = p.description || '';
+    document.title = `${p.name} · Maida Store`;
+    document.getElementById('metaDescription').setAttribute('content', p.description || `Descubre ${p.name} en Maida Store`);
+    document.getElementById('ogTitle').setAttribute('content', `${p.name} · Maida Store`);
+    document.getElementById('ogDescription').setAttribute('content', p.description || `Descubre ${p.name} en Maida Store`);
+    document.getElementById('ogImage').setAttribute('content', mainImgUrl);
+
+    const cat = (p.categories && p.categories[0]) || p.category;
+    if (cat) {
+      const badge = document.getElementById('categoryBadge');
+      badge.textContent = cat;
+      badge.style.display = 'inline-block';
+    }
+
+    // Precios
+    const hasOffer = p.originalPrice && p.originalPrice > p.price;
+    const discount = hasOffer ? Math.round((1 - (p.price / p.originalPrice)) * 100) : 0;
+    let pricesHtml = `<span class="price-current">${fmtPrice(p.price)}</span>`;
+    if (hasOffer) {
+      pricesHtml += `<span class="price-original">${fmtPrice(p.originalPrice)}</span>`;
+      pricesHtml += `<span class="discount-chip">-${discount}%</span>`;
+    }
+    document.getElementById('pricesBox').innerHTML = pricesHtml;
+
+    // Stock
+    const stockQty = p.stock || 0;
+    const outOfStock = stockQty <= 0;
+    const stockEl = document.getElementById('stockText');
+    stockEl.textContent = outOfStock ? 'Sin unidades disponibles' : `Disponibles: ${stockQty} unidades`;
+    stockEl.style.color = outOfStock ? '#e53935' : (stockQty <= 5 ? '#ff9800' : 'var(--muted)');
+
+    // Botón WhatsApp
+    const btn = document.getElementById('whatsappBtn');
+    if (outOfStock) {
+      btn.classList.add('disabled');
+      btn.textContent = '✕ Agotado';
+      btn.removeAttribute('href');
+      btn.onclick = (e) => e.preventDefault();
+    } else {
+      await loadSettings();
+      const waNum = window.WHATSAPP_NUMBER || '573000000000';
+      const productUrl = window.location.href;
+      const msg = `✨ ¡Hola! Me interesa este producto:\n\n*${p.name}*\n💰 ${fmtPrice(p.price)}${hasOffer ? ` (antes ${fmtPrice(p.originalPrice)})` : ''}\n\n${productUrl}\n\n¿Está disponible?`;
+      btn.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+    }
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('productPage').style.display = 'block';
+  }
+
+  loadProduct();
+</script>
+</body>
+</html>
