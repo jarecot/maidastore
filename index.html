@@ -437,10 +437,7 @@
   const product = products.find(p => p.id === productId);
 
   if (product) {
-    // Esperamos un momento para que el DOM termine de renderizar
-    setTimeout(() => {
-      openModal(productId);
-    }, 100);
+    window._productToOpen = productId;
   } else {
     console.warn('Producto no encontrado:', productId);
   }
@@ -457,6 +454,22 @@ let cart = JSON.parse(localStorage.getItem('yanbal_cart') || '[]');
 let currentProduct = null;
 let activeCategory = 'all';
 let searchTerm = '';
+
+function openProductFromURLIfNeeded() {
+  const productId = window._productToOpen;
+
+  if (!productId) return;
+
+  const product = (window._allProducts || []).find(p => p.id === productId);
+
+  if (!product) return;
+
+  window._productToOpen = null;
+
+  setTimeout(() => {
+    openModal(productId);
+  }, 100);
+}
 
 const hero = document.querySelector('.hero');
 if (hero) {
@@ -797,6 +810,9 @@ function fmtPrice(n) { return new Intl.NumberFormat('es-CO', { style: 'currency'
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
 updateCartUI();
+
+// Abrir automáticamente el producto indicado en la URL
+openProductFromURLIfNeeded();
 
 // setCategory is the single source of truth for category filtering
 </script>
