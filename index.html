@@ -427,6 +427,25 @@
     updateCartUI(); // Validate stock in cart if updated
   });
 
+  function openProductFromURL(products) {
+  const match = window.location.pathname.match(/^\/producto\/([^/]+)$/);
+
+  if (!match) return;
+
+  const productId = decodeURIComponent(match[1]);
+
+  const product = products.find(p => p.id === productId);
+
+  if (product) {
+    // Esperamos un momento para que el DOM termine de renderizar
+    setTimeout(() => {
+      openModal(productId);
+    }, 100);
+  } else {
+    console.warn('Producto no encontrado:', productId);
+  }
+}
+
   window._addOrder = async function(orderData) {
     const ref = await addDoc(collection(db, "orders"), { ...orderData, createdAt: serverTimestamp(), status: "pendiente" });
     return ref.id;
