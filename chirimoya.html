@@ -318,6 +318,7 @@
       document.getElementById('cfgCatCamp').value = s.catCamp || '';
       document.getElementById('cfgCatId').value = s.catId || '';
       document.getElementById('cfgImgbb').value = s.imgbbKey || '';
+      document.getElementById('cfgN8nWebhook').value = s.n8nWebhookUrl || '';
     }
   }
 
@@ -329,7 +330,8 @@
       catYear: document.getElementById('cfgCatYear').value,
       catCamp: document.getElementById('cfgCatCamp').value,
       catId: document.getElementById('cfgCatId').value,
-      imgbbKey: document.getElementById('cfgImgbb').value
+      imgbbKey: document.getElementById('cfgImgbb').value,
+      n8nWebhookUrl: document.getElementById('cfgN8nWebhook').value.trim()
     });
     showToast('✅ Configuración guardada exitosamente.');
   };
