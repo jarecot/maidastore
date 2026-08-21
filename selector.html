@@ -63,7 +63,7 @@
   import { firebaseConfig } from './firebase-config.js';
 
   // ⚠️ Reemplaza esta URL por la "Production URL" de tu nodo Webhook en n8n
-  const N8N_WEBHOOK_URL = 'https://TU-N8N-URL/webhook/publicar-producto';
+  const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook-test/publicar-producto';
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
