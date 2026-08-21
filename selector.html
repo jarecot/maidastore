@@ -59,14 +59,28 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { firebaseConfig } from './firebase-config.js';
 
-  // ⚠️ Reemplaza esta URL por la "Production URL" de tu nodo Webhook en n8n
-  const N8N_WEBHOOK_URL = 'https://scales-downloaded-obvious-wives.trycloudflare.com/webhook/publicar-producto';
-
+  
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+
+  async function getN8nWebhookUrl() {
+  const snap = await getDoc(doc(db, 'settings', 'store'));
+
+  if (!snap.exists()) {
+    throw new Error('No existe la configuración de la tienda.');
+  }
+
+  const url = (snap.data().n8nWebhookUrl || '').trim();
+
+  if (!url) {
+    throw new Error('No se ha configurado el webhook de n8n.');
+  }
+
+  return url;
+ }
 
   function fmtPrice(n) {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n || 0);
@@ -113,8 +127,10 @@
     statusMsg.textContent = '';
     statusMsg.className = 'status';
 
-    try {
-      const res = await fetch(N8N_WEBHOOK_URL, {
+   try {
+      const n8nWebhookUrl = await getN8nWebhookUrl();
+
+      const res = await fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: id })
