@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Publicar producto · Maida Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --rose: #c9736a; --rose-pale: #fdf0ee; --gold: #c9a96e;
+      --cream: #faf7f4; --charcoal: #2a2220; --muted: #8a7a76;
+      --shadow: 0 4px 24px rgba(42,34,32,0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: white; border-radius: 20px; box-shadow: var(--shadow); padding: 40px; max-width: 480px; width: 100%; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; }
+    select, input[type=text] { width: 100%; padding: 14px; border: 1.5px solid #ddd; border-radius: 10px; font-family: inherit; font-size: 1rem; margin-bottom: 20px; background: white; }
+    select:focus, input:focus { border-color: var(--rose); outline: none; }
+    .preview { display: none; gap: 14px; align-items: center; background: var(--rose-pale); border-radius: 12px; padding: 14px; margin-bottom: 20px; }
+    .preview img { width: 64px; height: 64px; border-radius: 8px; object-fit: contain; background: white; padding: 4px; }
+    .preview .info strong { display: block; font-size: 0.95rem; }
+    .preview .info span { font-size: 0.85rem; color: var(--rose); font-weight: 600; }
+    button { width: 100%; background: var(--rose); color: white; border: none; border-radius: 50px; padding: 16px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #b5635a; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    .status { text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
+    .status.success { color: #2e7d32; font-weight: 600; }
+    .status.error { color: #c62828; font-weight: 600; }
+    .loading { text-align: center; color: var(--muted); padding: 20px 0; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>📤 Publicar producto</h1>
+  <p class="subtitle">Elige el producto que quieres publicar en Instagram Story y WhatsApp.</p>
+
+  <div id="loadingBox" class="loading">Cargando productos…</div>
+
+  <form id="publishForm" style="display:none;">
+    <label for="productSelect">Producto</label>
+    <select id="productSelect" required></select>
+
+    <div class="preview" id="preview">
+      <img id="previewImg" src="" alt="" />
+      <div class="info">
+        <strong id="previewName"></strong>
+        <span id="previewPrice"></span>
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn">🚀 Publicar ahora</button>
+    <p class="status" id="statusMsg"></p>
+  </form>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { firebaseConfig } from './firebase-config.js';
+
+  // ⚠️ Reemplaza esta URL por la "Production URL" de tu nodo Webhook en n8n
+  const N8N_WEBHOOK_URL = 'https://TU-N8N-URL/webhook/publicar-producto';
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  function fmtPrice(n) {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n || 0);
+  }
+
+  let products = [];
+
+  async function loadProducts() {
+    const q = query(collection(db, 'products'), where('active', '==', true));
+    const snap = await getDocs(q);
+    products = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(p => (p.stock || 0) > 0)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const select = document.getElementById('productSelect');
+    select.innerHTML = '<option value="">Selecciona un producto…</option>' +
+      products.map(p => `<option value="${p.id}">${p.name} — ${fmtPrice(p.price)}</option>`).join('');
+
+    document.getElementById('loadingBox').style.display = 'none';
+    document.getElementById('publishForm').style.display = 'block';
+  }
+
+  document.getElementById('productSelect').addEventListener('change', (e) => {
+    const p = products.find(x => x.id === e.target.value);
+    const preview = document.getElementById('preview');
+    if (!p) { preview.style.display = 'none'; return; }
+    const img = (p.imageUrls && p.imageUrls[0]) || p.imageUrl || '';
+    document.getElementById('previewImg').src = img;
+    document.getElementById('previewName').textContent = p.name;
+    document.getElementById('previewPrice').textContent = fmtPrice(p.price);
+    preview.style.display = 'flex';
+  });
+
+  document.getElementById('publishForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('productSelect').value;
+    if (!id) return;
+
+    const btn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    statusMsg.textContent = '';
+    statusMsg.className = 'status';
+
+    try {
+      const res = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: id })
+      });
+      if (!res.ok) throw new Error('Respuesta no exitosa');
+      statusMsg.textContent = '✅ ¡Enviado! Se está publicando…';
+      statusMsg.className = 'status success';
+    } catch (err) {
+      statusMsg.textContent = '❌ Hubo un error al enviar. Intenta de nuevo.';
+      statusMsg.className = 'status error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🚀 Publicar ahora';
+    }
+  });
+
+  loadProducts();
+</script>
+</body>
+</html>
