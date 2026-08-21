@@ -62,7 +62,8 @@ module.exports = async (req, res) => {
   }
 
   const siteUrl = `https://${req.headers.host}`;
-  const productUrl = `${siteUrl}/producto.html?id=${id}`;
+  const canonicalUrl = `${siteUrl}/producto/${id}`;      // la URL que se comparte y que evalúa el Debugger
+  const productUrl = `${siteUrl}/producto.html?id=${id}`; // a donde se redirige al humano
 
   if (!product || product.active === false) {
     // Producto no encontrado: redirigimos al catálogo general
@@ -100,7 +101,9 @@ module.exports = async (req, res) => {
   <meta property="og:title" content="${escapeHtml(name)} · Maida Store"/>
   <meta property="og:description" content="${escapeHtml(description)}"/>
   <meta property="og:image" content="${escapeHtml(mainImg)}"/>
-  <meta property="og:url" content="${escapeHtml(productUrl)}"/>
+  <meta property="og:image:secure_url" content="${escapeHtml(mainImg)}"/>
+  <meta property="og:url" content="${escapeHtml(canonicalUrl)}"/>
+  <meta property="og:site_name" content="Maida Store"/>
   <meta property="og:type" content="product"/>
 
   <meta name="twitter:card" content="summary_large_image"/>
@@ -109,7 +112,7 @@ module.exports = async (req, res) => {
   <meta name="twitter:image" content="${escapeHtml(mainImg)}"/>
 
   <meta http-equiv="refresh" content="0; url=${escapeHtml(productUrl)}" />
-  <link rel="canonical" href="${escapeHtml(productUrl)}" />
+  <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
 </head>
 <body>
   <p>Redirigiendo a <a href="${escapeHtml(productUrl)}">${escapeHtml(name)}</a>…</p>
