@@ -111,11 +111,21 @@ module.exports = async (req, res) => {
   <meta name="twitter:description" content="${escapeHtml(description)}"/>
   <meta name="twitter:image" content="${escapeHtml(mainImg)}"/>
 
-  <meta http-equiv="refresh" content="0; url=${escapeHtml(productUrl)}" />
   <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+
+  <style>
+    body { font-family: sans-serif; background:#faf7f4; color:#2a2220; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; text-align:center; padding:20px; }
+    a.btn { display:inline-block; margin-top:16px; background:#c9736a; color:white; text-decoration:none; padding:14px 28px; border-radius:50px; font-weight:600; }
+    img.preview { max-width:200px; border-radius:12px; margin-bottom:16px; }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo a <a href="${escapeHtml(productUrl)}">${escapeHtml(name)}</a>…</p>
+  <div>
+    <img class="preview" src="${escapeHtml(mainImg)}" alt="${escapeHtml(name)}" />
+    <h1>${escapeHtml(name)}</h1>
+    <p>${escapeHtml(priceLine)}</p>
+    <a class="btn" href="${escapeHtml(productUrl)}">Ver producto →</a>
+  </div>
   <script>window.location.replace(${JSON.stringify(productUrl)});</script>
 </body>
 </html>`;
