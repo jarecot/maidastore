@@ -161,12 +161,23 @@
     productSelect.innerHTML = '<option value="">Selecciona un producto…</option>' +
       products.map(p => `<option value="${p.id}">${p.name} — ${fmtPrice(p.price)}</option>`).join('');
 
-    // Categorías únicas a partir del campo "category" de los productos publicables
+    // Categorías únicas a partir de "category" (singular) Y "categories" (array),
+    // para productos que pertenecen a más de una categoría.
+    // Cada producto solo se cuenta UNA vez por categoría, aunque aparezca repetido en ambos campos.
     const categoryCounts = {};
     products.forEach(p => {
-      const cat = (p.category || '').trim();
-      if (!cat) return;
-      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      const cats = new Set();
+      const single = (p.category || '').trim();
+      if (single) cats.add(single);
+      if (Array.isArray(p.categories)) {
+        p.categories.forEach(c => {
+          const clean = (c || '').trim();
+          if (clean) cats.add(clean);
+        });
+      }
+      cats.forEach(cat => {
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      });
     });
     const categories = Object.keys(categoryCounts).sort((a, b) => a.localeCompare(b));
 
