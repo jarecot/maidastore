@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Publicar producto · Maida Store</title>
+  <title>Publicar · Maida Store</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -15,40 +15,73 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
     .card { background: white; border-radius: 20px; box-shadow: var(--shadow); padding: 40px; max-width: 480px; width: 100%; }
     h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 8px; }
-    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; }
+
+    /* Toggle de modo Producto/Categoría */
+    .mode-toggle { display: flex; background: var(--rose-pale); border-radius: 50px; padding: 4px; margin-bottom: 24px; }
+    .mode-toggle button { flex: 1; border: none; background: transparent; padding: 10px 12px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--muted); cursor: pointer; transition: 0.2s; }
+    .mode-toggle button.active { background: var(--rose); color: white; box-shadow: 0 2px 8px rgba(201,115,106,0.35); }
+
     label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; }
     select, input[type=text] { width: 100%; padding: 14px; border: 1.5px solid #ddd; border-radius: 10px; font-family: inherit; font-size: 1rem; margin-bottom: 20px; background: white; }
     select:focus, input:focus { border-color: var(--rose); outline: none; }
+
     .preview { display: none; gap: 14px; align-items: center; background: var(--rose-pale); border-radius: 12px; padding: 14px; margin-bottom: 20px; }
     .preview img { width: 64px; height: 64px; border-radius: 8px; object-fit: contain; background: white; padding: 4px; }
     .preview .info strong { display: block; font-size: 0.95rem; }
     .preview .info span { font-size: 0.85rem; color: var(--rose); font-weight: 600; }
-    button { width: 100%; background: var(--rose); color: white; border: none; border-radius: 50px; padding: 16px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    button:hover { background: #b5635a; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
+
+    .cat-preview { display: none; background: var(--rose-pale); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; font-size: 0.9rem; color: var(--charcoal); }
+    .cat-preview strong { color: var(--rose); }
+
+    button[type=submit] { width: 100%; background: var(--rose); color: white; border: none; border-radius: 50px; padding: 16px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    button[type=submit]:hover { background: #b5635a; }
+    button[type=submit]:disabled { background: #ccc; cursor: not-allowed; }
+
     .status { text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
     .status.success { color: #2e7d32; font-weight: 600; }
     .status.error { color: #c62828; font-weight: 600; }
     .loading { text-align: center; color: var(--muted); padding: 20px 0; }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h1>📤 Publicar producto</h1>
-  <p class="subtitle">Elige el producto que quieres publicar en Instagram Story y WhatsApp.</p>
+  <h1 id="pageTitle">📤 Publicar</h1>
+  <p class="subtitle" id="pageSubtitle">Elige qué quieres publicar en Instagram Story y WhatsApp.</p>
 
-  <div id="loadingBox" class="loading">Cargando productos…</div>
+  <div class="mode-toggle">
+    <button type="button" id="modeProductBtn" class="active">🛍️ Producto</button>
+    <button type="button" id="modeCategoryBtn">🗂️ Categoría</button>
+  </div>
+
+  <div id="loadingBox" class="loading">Cargando…</div>
 
   <form id="publishForm" style="display:none;">
-    <label for="productSelect">Producto</label>
-    <select id="productSelect" required></select>
 
-    <div class="preview" id="preview">
-      <img id="previewImg" src="" alt="" />
-      <div class="info">
-        <strong id="previewName"></strong>
-        <span id="previewPrice"></span>
+    <!-- Modo Producto -->
+    <div id="productFields">
+      <label for="productSelect">Producto</label>
+      <select id="productSelect"></select>
+
+      <div class="preview" id="preview">
+        <img id="previewImg" src="" alt="" />
+        <div class="info">
+          <strong id="previewName"></strong>
+          <span id="previewPrice"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modo Categoría -->
+    <div id="categoryFields" class="hidden">
+      <label for="categorySelect">Categoría</label>
+      <select id="categorySelect"></select>
+
+      <div class="cat-preview" id="catPreview">
+        <strong id="catCount"></strong> <span id="catLabel"></span>
       </div>
     </div>
 
@@ -62,32 +95,59 @@
   import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { firebaseConfig } from './firebase-config.js';
 
-  
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   async function getN8nWebhookUrl() {
-  const snap = await getDoc(doc(db, 'settings', 'store'));
-
-  if (!snap.exists()) {
-    throw new Error('No existe la configuración de la tienda.');
+    const snap = await getDoc(doc(db, 'settings', 'store'));
+    if (!snap.exists()) throw new Error('No existe la configuración de la tienda.');
+    const url = (snap.data().n8nWebhookUrl || '').trim();
+    if (!url) throw new Error('No se ha configurado el webhook de n8n.');
+    return url;
   }
-
-  const url = (snap.data().n8nWebhookUrl || '').trim();
-
-  if (!url) {
-    throw new Error('No se ha configurado el webhook de n8n.');
-  }
-
-  return url;
- }
 
   function fmtPrice(n) {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n || 0);
   }
 
   let products = [];
+  let mode = 'product'; // 'product' | 'category'
 
+  // ---------- Toggle de modo ----------
+  const modeProductBtn = document.getElementById('modeProductBtn');
+  const modeCategoryBtn = document.getElementById('modeCategoryBtn');
+  const productFields = document.getElementById('productFields');
+  const categoryFields = document.getElementById('categoryFields');
+  const pageTitle = document.getElementById('pageTitle');
+  const pageSubtitle = document.getElementById('pageSubtitle');
+
+  function setMode(newMode) {
+    mode = newMode;
+    const isProduct = mode === 'product';
+
+    modeProductBtn.classList.toggle('active', isProduct);
+    modeCategoryBtn.classList.toggle('active', !isProduct);
+    productFields.classList.toggle('hidden', !isProduct);
+    categoryFields.classList.toggle('hidden', isProduct);
+
+    document.getElementById('preview').style.display = 'none';
+    document.getElementById('catPreview').style.display = 'none';
+    document.getElementById('statusMsg').textContent = '';
+    document.getElementById('statusMsg').className = 'status';
+
+    if (isProduct) {
+      pageTitle.textContent = '📤 Publicar producto';
+      pageSubtitle.textContent = 'Elige el producto que quieres publicar en Instagram Story y WhatsApp.';
+    } else {
+      pageTitle.textContent = '📤 Publicar categoría';
+      pageSubtitle.textContent = 'Elige una categoría y se publicarán todos sus productos disponibles en WhatsApp.';
+    }
+  }
+
+  modeProductBtn.addEventListener('click', () => setMode('product'));
+  modeCategoryBtn.addEventListener('click', () => setMode('category'));
+
+  // ---------- Carga de productos y categorías ----------
   async function loadProducts() {
     const q = query(collection(db, 'products'), where('active', '==', true));
     const snap = await getDocs(q);
@@ -96,12 +156,29 @@
       .filter(p => (p.stock || 0) > 0)
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    const select = document.getElementById('productSelect');
-    select.innerHTML = '<option value="">Selecciona un producto…</option>' +
+    // Select de productos
+    const productSelect = document.getElementById('productSelect');
+    productSelect.innerHTML = '<option value="">Selecciona un producto…</option>' +
       products.map(p => `<option value="${p.id}">${p.name} — ${fmtPrice(p.price)}</option>`).join('');
+
+    // Categorías únicas a partir del campo "category" de los productos publicables
+    const categoryCounts = {};
+    products.forEach(p => {
+      const cat = (p.category || '').trim();
+      if (!cat) return;
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+    const categories = Object.keys(categoryCounts).sort((a, b) => a.localeCompare(b));
+
+    const categorySelect = document.getElementById('categorySelect');
+    categorySelect.innerHTML = '<option value="">Selecciona una categoría…</option>' +
+      categories.map(c => `<option value="${c}">${c} (${categoryCounts[c]} disponibles)</option>`).join('');
 
     document.getElementById('loadingBox').style.display = 'none';
     document.getElementById('publishForm').style.display = 'block';
+
+    // Guardamos los conteos para el preview
+    categorySelect.dataset.counts = JSON.stringify(categoryCounts);
   }
 
   document.getElementById('productSelect').addEventListener('change', (e) => {
@@ -115,10 +192,32 @@
     preview.style.display = 'flex';
   });
 
+  document.getElementById('categorySelect').addEventListener('change', (e) => {
+    const catPreview = document.getElementById('catPreview');
+    const cat = e.target.value;
+    if (!cat) { catPreview.style.display = 'none'; return; }
+    const counts = JSON.parse(e.target.dataset.counts || '{}');
+    const n = counts[cat] || 0;
+    document.getElementById('catCount').textContent = n;
+    document.getElementById('catLabel').textContent = n === 1 ? 'producto disponible en esta categoría' : 'productos disponibles en esta categoría';
+    catPreview.style.display = 'block';
+  });
+
+  // ---------- Envío ----------
   document.getElementById('publishForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id = document.getElementById('productSelect').value;
-    if (!id) return;
+
+    let payload = null;
+
+    if (mode === 'product') {
+      const id = document.getElementById('productSelect').value;
+      if (!id) return;
+      payload = { productId: id };
+    } else {
+      const category = document.getElementById('categorySelect').value;
+      if (!category) return;
+      payload = { category };
+    }
 
     const btn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
@@ -127,13 +226,13 @@
     statusMsg.textContent = '';
     statusMsg.className = 'status';
 
-   try {
+    try {
       const n8nWebhookUrl = await getN8nWebhookUrl();
 
       const res = await fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: id })
+        body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error('Respuesta no exitosa');
       statusMsg.textContent = '✅ ¡Enviado! Se está publicando…';
