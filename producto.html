@@ -149,7 +149,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { firebaseConfig } from './firebase-config.js';
 
   const app = initializeApp(firebaseConfig);
@@ -157,6 +157,20 @@
 
   function fmtPrice(n) {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n || 0);
+  }
+
+  // Genera un slug legible a partir del nombre del producto: minúsculas, sin tildes,
+  // espacios y símbolos convertidos a guiones. Debe ser IDÉNTICA a la que use el resto del sitio
+  // (por ejemplo en publicar.html o al armar los links del copy en n8n) para que los slugs coincidan.
+  function slugify(text) {
+    return (text || '')
+      .toString()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita tildes
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')  // quita símbolos raros
+      .replace(/\s+/g, '-')          // espacios -> guiones
+      .replace(/-+/g, '-');          // colapsa guiones repetidos
   }
 
   function showError() {
@@ -185,20 +199,53 @@
   }
   window.changeMainImg = changeMainImg;
 
-  async function loadProduct() {
+  // Obtiene el identificador del producto desde la URL.
+  // Soporta ambos formatos por compatibilidad:
+  //   /producto/nombre-del-producto  (rewrite de Vercel -> ?slug=nombre-del-producto)
+  //   producto.html?id=abc123         (formato viejo, por si hay links antiguos circulando)
+  function getRequestedIdentifier() {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if (!id) { showError(); return; }
 
-    let snap;
+    // Vercel rewrite: /producto/:slug -> producto.html?slug=:slug
+    const slugParam = params.get('slug');
+    if (slugParam) return { type: 'slug', value: slugParam };
+
+    // Si el rewrite no vino como query param, también soportamos leerlo del path directo
+    const pathMatch = window.location.pathname.match(/\/producto\/([^/]+)/);
+    if (pathMatch) return { type: 'slug', value: decodeURIComponent(pathMatch[1]) };
+
+    // Formato viejo por compatibilidad con links ya compartidos
+    const idParam = params.get('id');
+    if (idParam) return { type: 'id', value: idParam };
+
+    return null;
+  }
+
+  async function findProductBySlug(slug) {
+    // Traemos los productos activos y comparamos el slug generado al vuelo,
+    // ya que Firestore no tiene un campo 'slug' propio.
+    const q = query(collection(db, 'products'), where('active', '==', true));
+    const snap = await getDocs(q);
+    const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return products.find(p => slugify(p.name) === slug) || null;
+  }
+
+  async function loadProduct() {
+    const identifier = getRequestedIdentifier();
+    if (!identifier) { showError(); return; }
+
+    let p = null;
+
     try {
-      snap = await getDoc(doc(db, 'products', id));
+      if (identifier.type === 'slug') {
+        p = await findProductBySlug(identifier.value);
+      } else {
+        const snap = await getDoc(doc(db, 'products', identifier.value));
+        if (snap.exists()) p = { id: snap.id, ...snap.data() };
+      }
     } catch (e) { showError(); return; }
 
-    if (!snap.exists()) { showError(); return; }
-
-    const p = { id: snap.id, ...snap.data() };
-
+    if (!p) { showError(); return; }
     if (p.active === false) { showError(); return; }
 
     // Imágenes

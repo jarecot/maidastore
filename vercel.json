@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/producto/:id", "destination": "/api/producto?id=:id" }
+    { "source": "/producto/:slug", "destination": "/api/producto?slug=:slug" }
   ]
 }
