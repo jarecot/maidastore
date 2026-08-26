@@ -83,6 +83,21 @@
       <div class="cat-preview" id="catPreview">
         <strong id="catCount"></strong> <span id="catLabel"></span>
       </div>
+
+      <label for="occasionSelect">Ocasión especial (opcional)</label>
+      <select id="occasionSelect">
+        <option value="">Ninguna — publicación normal</option>
+        <option value="dia-madres">🌷 Día de la Madre</option>
+        <option value="dia-padre">🎩 Día del Padre</option>
+        <option value="amor-amistad">💕 Amor y Amistad</option>
+        <option value="navidad">🎄 Navidad</option>
+        <option value="halloween">🎃 Halloween</option>
+        <option value="dia-secretaria">💼 Día de la Secretaria</option>
+        <option value="black-friday">🏷️ Black Friday</option>
+        <option value="otra">✨ Otra fecha (escribir)</option>
+      </select>
+
+      <input type="text" id="occasionCustom" placeholder="Ej: Día del Amigo, Aniversario de la tienda…" class="hidden" style="margin-top:-12px;" />
     </div>
 
     <button type="submit" id="submitBtn">🚀 Publicar ahora</button>
@@ -132,6 +147,9 @@
 
     document.getElementById('preview').style.display = 'none';
     document.getElementById('catPreview').style.display = 'none';
+    document.getElementById('occasionSelect').value = '';
+    document.getElementById('occasionCustom').value = '';
+    document.getElementById('occasionCustom').classList.add('hidden');
     document.getElementById('statusMsg').textContent = '';
     document.getElementById('statusMsg').className = 'status';
 
@@ -214,6 +232,17 @@
     catPreview.style.display = 'block';
   });
 
+  document.getElementById('occasionSelect').addEventListener('change', (e) => {
+    const customInput = document.getElementById('occasionCustom');
+    if (e.target.value === 'otra') {
+      customInput.classList.remove('hidden');
+      customInput.style.marginTop = '0';
+    } else {
+      customInput.classList.add('hidden');
+      customInput.value = '';
+    }
+  });
+
   // ---------- Envío ----------
   document.getElementById('publishForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -228,6 +257,14 @@
       const category = document.getElementById('categorySelect').value;
       if (!category) return;
       payload = { category };
+
+      const occasionValue = document.getElementById('occasionSelect').value;
+      if (occasionValue === 'otra') {
+        const customText = document.getElementById('occasionCustom').value.trim();
+        if (customText) payload.occasion = customText;
+      } else if (occasionValue) {
+        payload.occasion = occasionValue;
+      }
     }
 
     const btn = document.getElementById('submitBtn');
