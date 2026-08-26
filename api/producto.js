@@ -37,24 +37,58 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-module.exports = async (req, res) => {
-  const id = req.query.id;
+// Genera un slug legible a partir del nombre del producto: minúsculas, sin tildes,
+// espacios y símbolos convertidos a guiones. DEBE ser idéntica a la función slugify()
+// usada en producto.html y en el workflow de n8n (nodo "Extraer Copy"), para que
+// los links generados en cualquiera de los tres lugares apunten al mismo producto.
+function slugify(text) {
+  return (text || '')
+    .toString()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita tildes
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')  // quita símbolos raros
+    .replace(/\s+/g, '-')          // espacios -> guiones
+    .replace(/-+/g, '-');          // colapsa guiones repetidos
+}
 
-  if (!id) {
-    res.status(400).send('Falta el parámetro id');
+module.exports = async (req, res) => {
+  const slug = req.query.slug;
+  const idParam = req.query.id; // compatibilidad con links viejos ?id=...
+
+  if (!slug && !idParam) {
+    res.status(400).send('Falta el parámetro slug o id');
     return;
   }
 
-  const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/products/${id}`;
-
   let product = null;
+
   try {
-    const fsRes = await fetch(firestoreUrl);
-    if (fsRes.ok) {
-      const doc = await fsRes.json();
-      if (doc.fields) {
-        product = parseFirestoreFields(doc.fields);
-        product.id = id;
+    if (idParam) {
+      // Formato viejo: búsqueda directa por documento, más rápida.
+      const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/products/${idParam}`;
+      const fsRes = await fetch(firestoreUrl);
+      if (fsRes.ok) {
+        const doc = await fsRes.json();
+        if (doc.fields) {
+          product = parseFirestoreFields(doc.fields);
+          product.id = idParam;
+        }
+      }
+    } else {
+      // Formato nuevo: traemos productos activos y buscamos por slug generado al vuelo,
+      // ya que Firestore no tiene un campo 'slug' propio.
+      const listUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/products`;
+      const fsRes = await fetch(listUrl);
+      if (fsRes.ok) {
+        const data = await fsRes.json();
+        const documents = data.documents || [];
+        const products = documents.map(doc => {
+          const fields = parseFirestoreFields(doc.fields);
+          const docId = doc.name.split('/').pop();
+          return { id: docId, ...fields };
+        });
+        product = products.find(p => p.active !== false && slugify(p.name) === slug) || null;
       }
     }
   } catch (e) {
@@ -62,8 +96,9 @@ module.exports = async (req, res) => {
   }
 
   const siteUrl = `https://${req.headers.host}`;
-  const canonicalUrl = `${siteUrl}/producto/${id}`;      // la URL que se comparte y que evalúa el Debugger
-  const productUrl = `${siteUrl}/producto.html?id=${id}`; // a donde se redirige al humano
+  const finalSlug = product ? slugify(product.name) : (slug || '');
+  const canonicalUrl = `${siteUrl}/producto/${finalSlug}`;         // la URL que se comparte y que evalúa el Debugger
+  const productUrl = `${siteUrl}/producto.html?slug=${finalSlug}`; // a donde se redirige al humano
 
   if (!product || product.active === false) {
     // Producto no encontrado: redirigimos al catálogo general
