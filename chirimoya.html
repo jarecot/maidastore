@@ -587,20 +587,32 @@ window.saveProduct = async () => {
 
   window.handleImageUpload = async (e) => {
     const file = e.target.files[0]; if(!file) return;
-    const apiKey = document.getElementById('cfgImgbb').value;
-    if(!apiKey) { alert("🚨 Configura tu API Key de ImgBB en la pestaña de Configuración primero."); return; }
-    
+
+    const CLOUDINARY_CLOUD_NAME = 'ak2yjo1y';
+    const CLOUDINARY_UPLOAD_PRESET = 'maidastore_products';
+
     showToast("⏳ Subiendo imagen...");
-    const fd = new FormData(); fd.append('image', file);
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
     try {
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, { method: 'POST', body: fd });
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: fd
+      });
       const json = await res.json();
-      if(json.success) {
-        currentImages.push(json.data.url);
+      if(json.secure_url) {
+        currentImages.push(json.secure_url);
         renderImgList();
         showToast("🖼️ Imagen agregada correctamente");
+      } else {
+        throw new Error(json.error?.message || 'Error desconocido');
       }
-    } catch(err) { alert("Error subiendo imagen. Verifica tu conexión o la API Key."); }
+    } catch(err) {
+      console.error(err);
+      alert("Error subiendo imagen: " + err.message);
+    }
     e.target.value = ''; // Reset input file
   };
 
