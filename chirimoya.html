@@ -201,10 +201,6 @@
             />
         </div>
 
-        <h3 style="color:var(--rose);">🖼️ Imágenes (ImgBB)</h3>
-        <p style="font-size:0.85rem;color:gray;margin-bottom:15px;">Necesario para poder subir fotos. Obtén tu llave gratis en <a href="https://api.imgbb.com/" target="_blank">api.imgbb.com</a></p>
-        <div class="fg"><label>API Key ImgBB</label><input type="text" id="cfgImgbb" /></div>
-
         <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="saveSettings()">💾 Guardar Configuración</button>
       </div>
     </div>
@@ -317,7 +313,6 @@
       document.getElementById('cfgCatYear').value = s.catYear || '';
       document.getElementById('cfgCatCamp').value = s.catCamp || '';
       document.getElementById('cfgCatId').value = s.catId || '';
-      document.getElementById('cfgImgbb').value = s.imgbbKey || '';
       document.getElementById('cfgN8nWebhook').value = s.n8nWebhookUrl || '';
     }
   }
@@ -330,7 +325,6 @@
       catYear: document.getElementById('cfgCatYear').value,
       catCamp: document.getElementById('cfgCatCamp').value,
       catId: document.getElementById('cfgCatId').value,
-      imgbbKey: document.getElementById('cfgImgbb').value,
       n8nWebhookUrl: document.getElementById('cfgN8nWebhook').value.trim()
     });
     showToast('✅ Configuración guardada exitosamente.');
